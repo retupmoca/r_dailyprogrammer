@@ -12,7 +12,7 @@
 
 (defmacro def-spotfun (name &body body)
   `(defun ,name (idx cards)
-     $!card (nth idx cards)
+     $!(card (nth idx cards))
      ,@body))
 
 (def-spotfun flip-card
@@ -29,13 +29,14 @@
   cards)
 
 (defun unsolvable-p (list)
-  $island-1 nil
-  $in-island nil
-  $#island-fails () (if in-island
-                        (if island-1
-                            (clearf island-1 in-island)
-                            t)
-                        nil)
+  $(island-1 nil)
+  $(in-island nil)
+  $#(island-fails ()
+     (if in-island
+         (if island-1
+             (clearf island-1 in-island)
+             t)
+         nil))
   (dolist (x list)
         (if (null x)
             (when (island-fails)
@@ -46,7 +47,7 @@
   (island-fails))
 
 (defun try-removes (removes cards)
-  $my-cards (copy-list cards)
+  $(my-cards (copy-list cards))
   (dolist (remove removes)
     (remove-card remove my-cards)
     (when (unsolvable-p my-cards)
@@ -55,13 +56,13 @@
 
 (defun brute-force-solve (cards &optional pre)
   (iter (for i from 0 to (length cards))
-        $next-pre (append (copy-list pre) (list i))
+        $(next-pre (append (copy-list pre) (list i)))
         (handler-case
             (try-removes next-pre cards)
           (simple-error () (next-iteration)))
         (if (= (length cards) (length next-pre))
             (return-from brute-force-solve next-pre)
-            $recret (brute-force-solve cards next-pre)
+            $(recret (brute-force-solve cards next-pre))
             (when (not (null recret))
               (return-from brute-force-solve recret))))
   nil)
