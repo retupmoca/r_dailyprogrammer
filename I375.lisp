@@ -54,13 +54,11 @@
   my-cards)
 
 (defun brute-force-solve (cards &optional pre)
-  (print pre)
   (iter (for i from 0 to (length cards))
         $next-pre (append (copy-list pre) (list i))
         (handler-case
             (try-removes next-pre cards)
-          (simple-error () (print (cons "failed" next-pre)) (next-iteration)))
-        (print (cons "success" next-pre))
+          (simple-error () (next-iteration)))
         (if (= (length cards) (length next-pre))
             (return-from brute-force-solve next-pre)
             $recret (brute-force-solve cards next-pre)
